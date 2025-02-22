@@ -18,6 +18,7 @@ class MedicalRecordResource extends Resource
     protected static ?string $model = MedicalRecord::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Patients & Records';
 
     public static function form(Form $form): Form
     {

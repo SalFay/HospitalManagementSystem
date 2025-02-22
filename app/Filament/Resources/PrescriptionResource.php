@@ -17,7 +17,8 @@ class PrescriptionResource extends Resource
 {
     protected static ?string $model = Prescription::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'fontisto-prescription';
+    protected static ?string $navigationGroup = 'Patients & Records';
 
     public static function form(Form $form): Form
     {
