@@ -6,9 +6,12 @@ use App\Filament\Resources\DoctorResource\Pages;
 use App\Filament\Resources\DoctorResource\RelationManagers;
 use App\Models\Doctor;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,8 +25,17 @@ class DoctorResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        return $form->schema([
+            Section::make('Doctor')
+                ->description('Create / Update Doctor.')
+                ->icon('fontisto-doctor')
+                ->schema([
+                    Select::make( 'department_id' )
+                        ->relationship( 'department', 'name' )
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -37,10 +49,8 @@ class DoctorResource extends Resource
                 Forms\Components\TextInput::make('specialization')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('department_id')
-                    ->required()
-                    ->numeric(),
-            ]);
+                ])
+        ])->columns(12);
     }
 
     public static function table(Table $table): Table
@@ -55,8 +65,8 @@ class DoctorResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('specialization')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('department_id')
-                    ->numeric()
+                TextColumn::make( 'department.name' )
+                    ->numeric()->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

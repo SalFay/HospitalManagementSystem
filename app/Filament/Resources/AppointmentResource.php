@@ -6,9 +6,12 @@ use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,35 +23,42 @@ class AppointmentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Patients & Records';
 
-
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('patient_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('doctor_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('appointment_date')
-                    ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255)
-                    ->default('scheduled'),
-            ]);
+        return $form->schema([
+            Section::make('Appointment')
+                ->description('Create / Update an Appointment.')
+                ->icon('heroicon-m-user')
+                ->schema([
+                    Select::make('patient_id')
+                        ->relationship('patient', 'name')
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Select::make('doctor_id')
+                        ->relationship('doctor', 'name')
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\DateTimePicker::make('appointment_date')
+                        ->required(),
+                    Forms\Components\TextInput::make('status')
+                        ->required()
+                        ->maxLength(255)
+                        ->default('scheduled'),
+                ])
+        ])->columns(12);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('patient_id')
-                    ->numeric()
+                TextColumn::make('patient.name')
+                    ->numeric()->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('doctor_id')
-                    ->numeric()
+                TextColumn::make('doctor.name')
+                    ->numeric()->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('appointment_date')
                     ->dateTime()

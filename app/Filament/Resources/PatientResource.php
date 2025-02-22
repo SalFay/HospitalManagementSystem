@@ -6,6 +6,7 @@ use App\Filament\Resources\PatientResource\Pages;
 use App\Filament\Resources\PatientResource\RelationManagers;
 use App\Models\Patient;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,8 +23,11 @@ class PatientResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        return $form->schema([
+            Section::make('Patient')
+                ->description('Create / Update Patient.')
+                ->icon('fontisto-bed-patient')
+                ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -40,7 +44,8 @@ class PatientResource extends Resource
                 Forms\Components\TextInput::make('gender')
                     ->required()
                     ->maxLength(255),
-            ]);
+                ])
+        ])->columns(12);
     }
 
     public static function table(Table $table): Table

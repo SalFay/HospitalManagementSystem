@@ -6,6 +6,7 @@ use App\Filament\Resources\DepartmentResource\Pages;
 use App\Filament\Resources\DepartmentResource\RelationManagers;
 use App\Models\Department;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,14 +24,17 @@ class DepartmentResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
+        return $form->schema([
+                Section::make('Department')
+                    ->description('Create / Update Department.')
+                    ->icon('fontisto-doctor')
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
-            ]);
+            ])])->columns(12);
     }
 
     public static function table(Table $table): Table
