@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
-            $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('doctor_id')->constrained('doctors')->cascadeOnDelete();
             $table->dateTime('appointment_date');
             $table->string('status')->default('scheduled')->comment('scheduled, completed, cancelled');
             $table->timestamps();
