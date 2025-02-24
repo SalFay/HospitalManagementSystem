@@ -6,9 +6,12 @@ use App\Filament\Resources\MedicalRecordResource\Pages;
 use App\Filament\Resources\MedicalRecordResource\RelationManagers;
 use App\Models\MedicalRecord;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,28 +25,34 @@ class MedicalRecordResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('patient_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('diagnosis')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('treatment')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\DatePicker::make('record_date')
-                    ->required(),
-            ]);
+        return $form->schema([
+            Section::make('Medical Record')
+                ->description('Create / Update Medical Record.')
+                ->icon('heroicon-o-rectangle-stack')
+                ->schema([
+                    Select::make('patient_id')
+                        ->relationship('patient', 'name')
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Textarea::make('diagnosis')
+                        ->required()
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('treatment')
+                        ->required()
+                        ->columnSpanFull(),
+                    Forms\Components\DatePicker::make('record_date')
+                        ->required(),
+                ])])->columns(12);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('patient_id')
-                    ->numeric()
+
+                TextColumn::make('patient.name')
+                    ->numeric()->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('record_date')
                     ->date()

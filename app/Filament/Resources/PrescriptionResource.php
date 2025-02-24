@@ -6,9 +6,12 @@ use App\Filament\Resources\PrescriptionResource\Pages;
 use App\Filament\Resources\PrescriptionResource\RelationManagers;
 use App\Models\Prescription;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,25 +25,28 @@ class PrescriptionResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('appointment_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('medications')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('instructions')
-                    ->columnSpanFull(),
-            ]);
+        return $form->schema([
+            Section::make('Prescription')
+                ->schema([
+                    Select::make('appointment_id')
+                        ->relationship('appointment', 'appointment_date')
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Textarea::make('medications')
+                        ->required()
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('instructions')
+                        ->columnSpanFull(),
+                ])])->columns(12);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('appointment_id')
-                    ->numeric()
+                TextColumn::make('appointment.appointment_date')
+                    ->numeric()->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
